@@ -2,6 +2,7 @@
 Module for generating sample data.
 """
 import numpy as np
+from pathlib import Path
 
 from src.generate import (
     generate_gaussian_noise,
@@ -83,3 +84,43 @@ def generate_faulty_signal(label: int, seed: int = 42) -> np.ndarray:
             width = length // 10
             faulty[start:start + width] = 0.0
             return faulty
+
+
+def generate_data(
+    path: Path,
+    n_healthy: int = 500,
+    n_faulty_per_class: int = 500,
+    seed: int = 42
+):
+    """
+    Generates healthy and faulty signals and saves them to disk.
+
+    Directory structure:
+        path/
+            healthy/
+            faulty_1/
+            faulty_2/
+            faulty_3/
+            faulty_4/
+    """
+
+    path.mkdir(parents=True, exist_ok=True)
+    rng = np.random.default_rng(seed)
+
+    # Healthy data
+    healthy_dir = path / "healthy"
+    healthy_dir.mkdir(exist_ok=True)
+
+    for i in range(n_healthy):
+        signal = generate_healthy_signal()
+        np.save(healthy_dir / f"healthy_{i:04d}.npy", signal)
+
+    # Faulty data
+    for label in (1, 2, 3, 4):
+        faulty_dir = path / f"faulty_{label}"
+        faulty_dir.mkdir(exist_ok=True)
+
+        for i in range(n_faulty_per_class):
+            sample_seed = rng.integers(0, 1_000_000)
+            signal = generate_faulty_signal(label=label, seed=int(sample_seed))
+            np.save(faulty_dir / f"faulty_{label}_{i:04d}.npy", signal)
