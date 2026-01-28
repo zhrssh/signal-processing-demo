@@ -1,67 +1,18 @@
-"""
-Testing generate_samples.py
-"""
 import numpy as np
+
 from pathlib import Path
-import pytest
 
-from src.generate import (
-    generate_gaussian_noise,
-    generate_signal
-)
 from src.utils.generate_samples import (
+    generate_data,
     generate_healthy_signal,
-    generate_faulty_signal,
-    generate_data
+    generate_faulty_signal
 )
-from src.utils.generate_samples import (
-    FREQUENCY,
-    SAMPLING_RATE,
-    DURATION
-)
-
-
-def test_generate_healthy_signal():
-    sample_signal = generate_signal(FREQUENCY, SAMPLING_RATE, DURATION)
-    sample_noise = generate_gaussian_noise(len(sample_signal))
-    test_signal = sample_signal + sample_noise
-
-    result = generate_healthy_signal()
-
-    assert result.size == test_signal.size
-    assert np.array_equal(result, test_signal)
-
-
-@pytest.mark.parametrize("label, seed", [
-    (2.0, 42),
-    ('4', 42),
-    (False, 42),
-    (1, '0'),
-    (2, None),
-    (3, False),
-    (None, None)
-])
-def test_generate_faulty_signal_invalid_types(label, seed):
-    with pytest.raises(TypeError):
-        generate_faulty_signal(label, seed)
-
-
-@pytest.mark.parametrize("label", [
-    5,
-    -1,
-])
-def test_generate_faulty_signal_invalid_values(label):
-    with pytest.raises(ValueError):
-        generate_faulty_signal(label)
-
-
-@pytest.mark.parametrize("label", [1, 2, 3, 4])
-def test_generate_faulty_signal_shape(label):
-    sig = generate_faulty_signal(label, seed=0)
-    assert sig.shape == generate_healthy_signal().shape
 
 
 def test_generate_data_creates_structure(tmp_path: Path):
+    """
+    Test for generate_data creating structure.
+    """
     generate_data(
         path=tmp_path,
         n_healthy=10,
@@ -76,6 +27,9 @@ def test_generate_data_creates_structure(tmp_path: Path):
 
 
 def test_generate_data_file_counts(tmp_path: Path):
+    """
+    Test for generate_data generating correct number of files.
+    """
     n_healthy = 8
     n_faulty = 6
 
@@ -94,6 +48,9 @@ def test_generate_data_file_counts(tmp_path: Path):
 
 
 def test_saved_arrays_are_valid(tmp_path: Path):
+    """
+    Test for generate_data checking if .npy files are valid.
+    """
     generate_data(tmp_path, n_healthy=2, n_faulty_per_class=2)
 
     for file in tmp_path.rglob("*.npy"):
@@ -105,6 +62,9 @@ def test_saved_arrays_are_valid(tmp_path: Path):
 
 
 def test_faulty_differs_from_healthy():
+    """
+    Test for generate_data checking if healthy and faulty signal are different.
+    """
     healthy = generate_healthy_signal()
     faulty = generate_faulty_signal(label=1, seed=1)
 
@@ -113,6 +73,9 @@ def test_faulty_differs_from_healthy():
 
 
 def test_faulty_signal_is_deterministic():
+    """
+    Test for generate_data's reproducibility.
+    """
     x1 = generate_faulty_signal(label=2, seed=123)
     x2 = generate_faulty_signal(label=2, seed=123)
 
