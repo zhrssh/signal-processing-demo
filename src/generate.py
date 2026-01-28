@@ -4,7 +4,7 @@ Module for generating syntethic signals. For demo purposes only.
 import numpy as np
 
 
-def generate_signal(freq: float, fs: float, duration: float) -> np.ndarray:
+def generate_signal(freq: int, fs: float, duration: float) -> np.ndarray:
     """
     Generates a signal based on specification.
 
@@ -18,8 +18,8 @@ def generate_signal(freq: float, fs: float, duration: float) -> np.ndarray:
     """
 
     # Check input type
-    if type(freq) is not float:
-        raise TypeError("'freq' must be a float type.")
+    if type(freq) not in [int, float]:
+        raise TypeError("'freq' must be a number type.")
     if type(fs) is not float:
         raise TypeError("'fs' must be a float type.")
     if type(duration) is not float:

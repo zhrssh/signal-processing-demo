@@ -10,12 +10,11 @@ from src.generate import (
 )
 
 # Default signal settings
-FREQUENCY = 60.0
 SAMPLING_RATE = 1000.0
 DURATION = 5.0
 
 
-def generate_healthy_signal() -> np.ndarray:
+def generate_healthy_signal(freq: int) -> np.ndarray:
     """
     Generates a health signal
 
@@ -23,7 +22,7 @@ def generate_healthy_signal() -> np.ndarray:
     (np.ndarray): Health signal.
     """
     signal = generate_signal(
-        freq=FREQUENCY, fs=SAMPLING_RATE, duration=DURATION)
+        freq=freq, fs=SAMPLING_RATE, duration=DURATION)
     noise = generate_gaussian_noise(signal.size)
     return signal + noise
 
@@ -50,7 +49,10 @@ def generate_faulty_signal(label: int, seed: int = 42) -> np.ndarray:
         raise ValueError("'label' must be in (1, 2, 3, 4)")
 
     np.random.seed(seed=seed)
-    healthy = generate_healthy_signal()
+    signal_30 = generate_healthy_signal(30)
+    signal_42 = generate_healthy_signal(42)
+    signal_60 = generate_healthy_signal(60)
+    healthy = signal_30 + signal_42 + signal_60
     length = healthy.size
 
     match label:
@@ -69,11 +71,22 @@ def generate_faulty_signal(label: int, seed: int = 42) -> np.ndarray:
 
         case 3:
             # Frequency shift
-            shifted = generate_signal(
-                freq=FREQUENCY * np.random.uniform(1.2, 1.5),
+            shifted_30 = generate_signal(
+                freq=30 * np.random.uniform(1, 5),
                 fs=SAMPLING_RATE,
                 duration=DURATION
             )
+            shifted_42 = generate_signal(
+                freq=42 * np.random.uniform(1, 5),
+                fs=SAMPLING_RATE,
+                duration=DURATION
+            )
+            shifted_60 = generate_signal(
+                freq=60 * np.random.uniform(1, 5),
+                fs=SAMPLING_RATE,
+                duration=DURATION
+            )
+            shifted = shifted_30 + shifted_42 + shifted_60
             noise = generate_gaussian_noise(shifted.size)
             return shifted + noise
 
@@ -112,7 +125,10 @@ def generate_data(
     healthy_dir.mkdir(exist_ok=True)
 
     for i in range(n_healthy):
-        signal = generate_healthy_signal()
+        signal_30 = generate_healthy_signal(30)
+        signal_42 = generate_healthy_signal(42)
+        signal_60 = generate_healthy_signal(60)
+        signal = signal_30 + signal_42 + signal_60
         np.save(healthy_dir / f"healthy_{i:04d}.npy", signal)
 
     # Faulty data

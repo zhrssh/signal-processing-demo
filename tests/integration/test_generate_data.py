@@ -65,7 +65,7 @@ def test_faulty_differs_from_healthy():
     """
     Test for generate_data checking if healthy and faulty signal are different.
     """
-    healthy = generate_healthy_signal()
+    healthy = generate_healthy_signal(60)
     faulty = generate_faulty_signal(label=1, seed=1)
 
     # Not equal elementwise

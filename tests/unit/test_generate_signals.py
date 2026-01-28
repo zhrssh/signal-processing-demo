@@ -15,7 +15,6 @@ from src.utils.generate_samples import (
     generate_data
 )
 from src.utils.generate_samples import (
-    FREQUENCY,
     SAMPLING_RATE,
     DURATION
 )
@@ -25,11 +24,11 @@ def test_generate_healthy_signal():
     """
     Test for generating a healthy signal.
     """
-    sample_signal = generate_signal(FREQUENCY, SAMPLING_RATE, DURATION)
+    sample_signal = generate_signal(60, SAMPLING_RATE, DURATION)
     sample_noise = generate_gaussian_noise(len(sample_signal))
     test_signal = sample_signal + sample_noise
 
-    result = generate_healthy_signal()
+    result = generate_healthy_signal(60)
 
     assert result.size == test_signal.size
     assert np.array_equal(result, test_signal)
@@ -70,4 +69,4 @@ def test_generate_faulty_signal_shape(label):
     Test for generating a faulty signal with good values.
     """
     sig = generate_faulty_signal(label, seed=0)
-    assert sig.shape == generate_healthy_signal().shape
+    assert sig.shape == generate_healthy_signal(60).shape
