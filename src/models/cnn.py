@@ -1,27 +1,18 @@
-
 from torch import nn
+from torchvision import models
 
 
-class SimpleCNN(nn.Module):
-    def __init__(self):
+class GoogleNetFT(nn.Module):
+    def __init__(self, num_classes: int, requires_grad: bool = False):
         super().__init__()
-        self.conv_stack = nn.Sequential(
-            nn.Conv2d(1, 64, 3),
-            nn.MaxPool2d(2),
-            nn.Conv2d(64, 32, 3),
-            nn.MaxPool2d(2),
-            nn.Conv2d(32, 16, 3),
-            nn.AdaptiveAvgPool2d((3, 3)),
-            nn.Flatten()
-        )
+        self.model = models.googlenet(weights='IMAGENET1K_V1')
+        for param in self.model.parameters():
+            param.requires_grad = requires_grad
 
-        self.fc_stack = nn.Sequential(
-            nn.Linear(16 * 3 * 3, 120),
-            nn.ReLU(),
-            nn.Linear(120, 32),
-            nn.ReLU(),
-            nn.Linear(32, 5)
-        )
+        # Changing the output layer
+        num_features = self.model.fc.in_features
+        self.model.fc = nn.Linear(num_features, num_classes)
 
     def forward(self, x):
-        return self.fc_stack(self.conv_stack(x))
+        logits = self.model(x)
+        return logits
