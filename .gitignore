@@ -216,4 +216,5 @@ __marimo__/
 .streamlit/secrets.toml
 
 # My directories
-data/
+data/**/*.wav
+data/**/*.png
