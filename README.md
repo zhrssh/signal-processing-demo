@@ -1,23 +1,42 @@
 # Signal Processing Demo
 
-This repository contains the source code and notebooks used for the presentation.
+This repository contains the source code and notebooks used in the signal processing presentation. It demonstrates preprocessing raw audio into Mel spectrograms and experimenting with them in notebooks.
 
-## How to install
+## Installation
 
-### Prerequisites:
+### Prerequisites
 
-- You must have `uv` installed in the system. It will handle most of the dependencies needed for this project.
-- Download the dataset from this [link](https://www.kaggle.com/datasets/alanchn31/free-spoken-digits).
+- uv must be installed. It manages Python and project dependencies for this repository.
+  - Installation instructions:
+    [`uv` Official Website](https://docs.astral.sh/uv/)
+- Dataset download
+  - Free Spoken Digits dataset:
+    [Kaggle](https://www.kaggle.com/datasets/alanchn31/free-spoken-digits)
 
-### How to install
+## Setup Instructions
 
-1. Once you've downloaded the dataset. Extract the contents of the `recordings` directory containing the `.wav` files and paste it into the `data/audio/recordings` directory.
-2. You should now have a `data/audio/recordings` directory containing 3000+ files.
-3. Next, run `uv sync` to synchronize the dependencies needed for this project.
-4. After that, run `uv run main.py` to preprocess the raw data into Mel Spectrogram images.
-5. Finally, run `uv run jupyter notebook` to run the Jupyter Notebook server.
-6. You can now explore the notebooks and try experimenting with the code.
+1. Prepare the dataset
+    - Extract the recordings directory from the downloaded dataset.
+    - Copy it into:
+        `data/audio/recordings` directory
+    - After this step, the directory should contain 3000 `.wav` files.
 
-## Notes:
+2. Install dependencies
+    `uv sync`
 
-- The `src/utils` directory contains the code to generate some sample data.
+3. Preprocess audio data
+    `uv run main.py`
+    - This converts raw audio into Mel spectrogram images.
+    - Generated images are saved in:
+        - data/audio/spec
+
+4. Launch Jupyter Notebook
+    `uv run jupyter notebook`
+
+5. Explore
+    - Open the notebooks and experiment with the preprocessing and models.
+
+## Notes
+
+- The src/utils directory contains helper code for generating sample synthetic data.
+
